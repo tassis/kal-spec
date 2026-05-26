@@ -149,6 +149,22 @@ A component header declares the component kind and scope interface. It does not 
 
 Component identity, if needed for execution, lookup, display, packaging, or user-facing selection, is host-defined.
 
+If a component uses no header sections, the header may be written as a bare component-kind node without a block.
+
+In that case, the bare form and the empty-block form are semantically equivalent.
+
+Examples:
+
+```kdl
+recipe
+```
+
+```kdl
+recipe {}
+```
+
+If any header section is declared, the block form is required.
+
 The operator body is written after the component header as sibling nodes. Operators are not nested inside a generic `body` block.
 
 Example:
@@ -213,6 +229,16 @@ outputs
 globals
 ```
 
+All four header sections are optional.
+
+If a component does not use `inputs`, `locals`, `outputs`, or `globals`, the unused sections may be omitted from that component header.
+
+If all four sections are omitted, the component header may be written without a block.
+
+In that case, bare forms such as `recipe` and empty-block forms such as `recipe {}` are semantically equivalent.
+
+If any header section is present, the block form is required.
+
 Example:
 
 ```kdl
@@ -235,7 +261,7 @@ recipe {
 }
 ```
 
-`globals` is optional. A component that does not use shared global values does not need a `globals` section.
+This applies equally to all four header sections. A component only declares the sections it uses.
 
 ### 5.1 Header Declaration Shape
 
@@ -479,16 +505,7 @@ A plan must not use another plan.
 Example:
 
 ```kdl
-plan {
-  inputs {
-  }
-
-  locals {
-  }
-
-  outputs {
-  }
-}
+plan
 ```
 
 Allowing operators directly inside a plan keeps simple automation easy. Recipes and fragments are organizational tools; they should improve structure and reuse, but they should not be mandatory for every small workflow.
@@ -512,6 +529,12 @@ A recipe must not:
 Recipes are reusable workflow units for plans, but recipes should not secretly orchestrate other recipes. If multiple recipes need to be composed together, that composition should happen at the plan level.
 
 Example:
+
+```kdl
+recipe
+```
+
+Or, when a scoped interface is needed:
 
 ```kdl
 recipe {
@@ -1760,3 +1783,83 @@ No major unresolved language-shape questions are currently tracked in this core 
 Remaining refinements are expected to clarify declaration syntax, validation edge cases, canonical examples, and host/spec boundaries without changing the current intended semantics.
 
 Host, toolchain, package, runtime, inventory, secrets, reporting, standard-library, and extension topics should be tracked in their respective specifications.
+
+---
+
+## 26. Host and Runtime Boundary
+
+KAL core defines language-level workflow semantics. It does not define the full execution environment.
+
+This section summarizes concerns intentionally left to the host, runtime, toolchain, standard library, extension specifications, or adjacent project specifications.
+
+### 26.1 Component Identity and Packaging
+
+- component identity is host-defined
+- document-to-component lookup is host-defined
+- multi-document project organization is host- or toolchain-defined
+- package layout, registry layout, and user-facing selection models are outside KAL core
+
+### 26.2 Reference Syntax and Resolution
+
+- concrete reference syntax is host-defined
+- lookup mechanisms are host-defined
+- filesystem layout, path aliases, namespaces, registry lookup, and dependency resolution are outside KAL core
+- KAL core defines required semantic targets and validation behavior after resolution, not how resolution is performed
+
+### 26.3 Runtime Execution Environment
+
+- concrete runtime execution behavior is outside KAL core
+- controller/target process topology is not defined here beyond operator placement semantics
+- transport, persistence, reporting, inventory, and secrets concerns are outside this specification
+
+### 26.4 Global Value Provisioning
+
+- `globals` access declarations are part of KAL core
+- the source of global values is host/runtime-defined
+- global lifetime, initialization, refresh, synchronization, storage, and injection are host/runtime-defined
+- KAL core does not define what concrete values are made available through `globals`
+
+### 26.5 Concurrency and Parallelism
+
+- component bodies execute sequentially by default in KAL core
+- KAL core does not define parallel component-body execution
+- if a host/runtime introduces parallel execution, it is responsible for defining or rejecting concurrent shared-state behavior
+- concurrent writes to shared state are not resolved by KAL core
+
+### 26.6 Operator Libraries and Extensions
+
+- KAL core defines operator categories and common contract expectations
+- non-core operator behavior is left to host, standard-library, or extension specifications
+- extension operator behavior is outside this core specification
+- change-like results such as `changed` are operator-defined rather than universal language features
+
+### 26.7 Data Document Mapping
+
+- `core.load_vars` requires the resolved data document to expose an object-shaped capture domain
+- KAL core does not define the concrete surface mapping from a host data document format to that object domain
+- analyzable keys may become capture sources when the host/toolchain can derive them
+- the exact document format, parsing policy, and key-mapping model are host/toolchain-defined
+
+### 26.8 Runtime Responsibilities Summary
+
+In short, KAL core defines:
+
+```text
+workflow structure
+scope and dataflow semantics
+component composition rules
+core operator semantics
+validation expectations
+```
+
+The host/runtime/toolchain defines:
+
+```text
+how documents are found
+how components are identified
+how references resolve
+how globals are provisioned
+how vars documents are mapped
+how non-core operators behave
+how runtime execution is concretely hosted
+```

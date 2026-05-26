@@ -9,6 +9,16 @@ outputs
 globals
 ```
 
+All four header sections are optional.
+
+If a component does not use `inputs`, `locals`, `outputs`, or `globals`, the unused sections may be omitted from that component header.
+
+If all four sections are omitted, the component header may be written without a block.
+
+In that case, bare forms such as `recipe` and empty-block forms such as `recipe {}` are semantically equivalent.
+
+If any header section is present, the block form is required.
+
 Example:
 
 ```kdl
@@ -31,7 +41,7 @@ recipe {
 }
 ```
 
-`globals` is optional. A component that does not use shared global values does not need a `globals` section.
+This applies equally to all four header sections. A component only declares the sections it uses.
 
 ### 5.1 Header Declaration Shape
 

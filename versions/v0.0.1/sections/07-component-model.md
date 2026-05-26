@@ -29,16 +29,7 @@ A plan must not use another plan.
 Example:
 
 ```kdl
-plan {
-  inputs {
-  }
-
-  locals {
-  }
-
-  outputs {
-  }
-}
+plan
 ```
 
 Allowing operators directly inside a plan keeps simple automation easy. Recipes and fragments are organizational tools; they should improve structure and reuse, but they should not be mandatory for every small workflow.
@@ -62,6 +53,12 @@ A recipe must not:
 Recipes are reusable workflow units for plans, but recipes should not secretly orchestrate other recipes. If multiple recipes need to be composed together, that composition should happen at the plan level.
 
 Example:
+
+```kdl
+recipe
+```
+
+Or, when a scoped interface is needed:
 
 ```kdl
 recipe {

@@ -25,6 +25,9 @@ features:
     details: A full all-in-one snapshot is preserved for holistic reading and diff-based review.
 ---
 
+<br/>
+<br/>
+
 # KAL Specification
 
 This repository contains versioned drafts of the KAL language specification.

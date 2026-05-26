@@ -18,6 +18,22 @@ A component header declares the component kind and scope interface. It does not 
 
 Component identity, if needed for execution, lookup, display, packaging, or user-facing selection, is host-defined.
 
+If a component uses no header sections, the header may be written as a bare component-kind node without a block.
+
+In that case, the bare form and the empty-block form are semantically equivalent.
+
+Examples:
+
+```kdl
+recipe
+```
+
+```kdl
+recipe {}
+```
+
+If any header section is declared, the block form is required.
+
 The operator body is written after the component header as sibling nodes. Operators are not nested inside a generic `body` block.
 
 Example:
