@@ -1,0 +1,14 @@
+{
+  "name": "kal-spec",
+  "private": true,
+  "scripts": {
+    "docs:dev": "vitepress dev .",
+    "docs:build": "vitepress build . && cp public/logo.svg .vitepress/dist/logo.svg",
+    "docs:preview": "vitepress preview .",
+    "preview": "npm run docs:build && wrangler dev"
+  },
+  "devDependencies": {
+    "vitepress": "^1.6.4",
+    "wrangler": "^4.94.0"
+  }
+}
